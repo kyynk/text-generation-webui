@@ -1,3 +1,37 @@
+```bash
+# this tutorial assumes conda and git are both installed on your computer
+
+conda create -n tg python=3.10.9
+conda activate tg
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu117
+git clone https://github.com/oobabooga/text-generation-webui.git
+cd text-generation-webui
+pip install -r requirements.txt
+
+# GPU only:
+pip uninstall -y llama-cpp-python
+set CMAKE_ARGS="-DLLAMA_CUBLAS=on"
+set FORCE_CMAKE=1
+pip install llama-cpp-python --no-cache-dir
+
+# If you get: ERROR: Failed building wheel for llama-cpp-python
+set "CMAKE_ARGS=-DLLAMA_OPENBLAS=on"
+set "FORCE_CMAKE=1"
+pip install llama-cpp-python --no-cache-dir
+
+# Put checker.py in your text-generation-webui folder
+python checker.py #Make sure you have cuda and it is enabled
+
+# If you get CUDA Setup failed despite GPU being available.: 
+pip install bitsandbytes-windows
+
+# If you get AttributeError: module 'bitsandbytes.nn' has no attribute 'Linear4bit'. Did you mean: 'Linear8bitLt'?
+pip install git+https://github.com/huggingface/peft@27af2198225cbb9e049f548440f2bd0fba2204aa --force-reinstall --no-deps
+
+python server.py
+```
+
+
 # Text generation web UI
 
 A Gradio web UI for Large Language Models.
